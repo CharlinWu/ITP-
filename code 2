@@ -1,0 +1,75 @@
+COED 2 FOR PUSHBUTTON RING
+
+const int out1 = 6;
+const int out2 = 7;
+const int out3 = 8;
+const int out4 = 9;
+const int out5 = 10;
+const int bluePush = 5;
+
+//blue push
+int bluepushCount = 0;
+int blueButtonState;
+int preBlueButtonState = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(out1, OUTPUT);
+  pinMode(out2, OUTPUT);
+  pinMode(out3, OUTPUT);
+  pinMode(out4, OUTPUT);
+  pinMode(out5, OUTPUT);
+  pinMode(bluePush, INPUT);
+
+  Serial.begin(9600);
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  if (bluepushCount > 2) {
+    bluepushCount = 0;
+  }
+
+  blueButtonState = digitalRead (bluePush);
+
+  if (preBlueButtonState == 0 && blueButtonState == 1) {
+    preBlueButtonState = 1;
+
+
+  }
+
+
+
+  if (preBlueButtonState == 1 && blueButtonState == 0) {
+    preBlueButtonState = 0;
+    bluepushCount ++;
+}
+    
+  if (bluepushCount == 0)
+  {
+    digitalWrite(out1, HIGH);
+    digitalWrite(out2, LOW);
+    digitalWrite(out3, HIGH);
+    digitalWrite(out4, LOW);
+    digitalWrite(out5, HIGH);
+  }
+  else if (bluepushCount == 1)
+  {
+    digitalWrite(out1, LOW);
+    digitalWrite(out2, LOW);
+    digitalWrite(out3, LOW);
+    digitalWrite(out4, LOW);
+    digitalWrite(out5, LOW);
+}
+
+else if (bluepushCount == 2)
+  {
+    digitalWrite(out1, LOW);
+    digitalWrite(out2, LOW);
+    digitalWrite(out3, LOW);
+    digitalWrite(out4, HIGH);
+    digitalWrite(out5, HIGH);
+  }
+}
