@@ -1,0 +1,205 @@
+
+
+CODE FOR PUSHBUTTON RINGS AT NYU ITP PCOMP 
+
+
+const int out1 = 6;
+const int out2 = 7;
+const int out3 = 8;
+const int out4 = 9;
+const int out5 = 10;
+const int yellowPush = 3;
+const int redPush = 4;
+const int bluePush = 2;
+const int greenPush = 5;
+
+//yellow push
+int pushCount = 0;
+int yellowButtonState;
+int preYellowButtonState = 0;
+//red push
+int redpushCount = 0;
+int redButtonState;
+int preRedButtonState = 0;
+//blue push
+int bluepushCount = 0;
+int blueButtonState;
+int preBlueButtonState = 0;
+
+
+
+
+
+
+void setup() {
+  // put your setup code here, to run once:
+
+  pinMode(out1, OUTPUT);
+  pinMode(out2, OUTPUT);
+  pinMode(out3, OUTPUT);
+  pinMode(out4, OUTPUT);
+  pinMode(out5, OUTPUT);
+  pinMode(yellowPush, INPUT);
+  pinMode(redPush, INPUT);
+  pinMode(bluePush, INPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  if (preYellowButtonState == 0 && yellowButtonState == 1) {
+    preYellowButtonState = 1;
+
+
+  }
+
+
+
+  if (preYellowButtonState == 1 && yellowButtonState == 0) {
+    preYellowButtonState = 0;
+    pushCount ++;
+
+
+  }
+
+
+
+
+  if (pushCount > 5) {
+    pushCount = 0;
+  }
+
+  yellowButtonState = digitalRead (3);
+
+
+
+
+  if (pushCount == 0)
+  {
+    digitalWrite(out1, HIGH);
+    digitalWrite(out2, LOW);
+    digitalWrite(out3, LOW);
+    digitalWrite(out4, LOW);
+    digitalWrite(out5, LOW);
+  }
+  else if (pushCount == 1)
+  {
+    digitalWrite(out1, HIGH);
+    digitalWrite(out2, HIGH);
+    digitalWrite(out3, LOW);
+    digitalWrite(out4, LOW);
+    digitalWrite(out5, LOW);
+  }
+  else if (pushCount == 2)
+  {
+    digitalWrite(out1, HIGH);
+    digitalWrite(out2, HIGH);
+    digitalWrite(out3, HIGH);
+    digitalWrite(out4, LOW);
+    digitalWrite(out5, LOW);
+  }
+  else if (pushCount == 3)
+  {
+    digitalWrite(out1, HIGH);
+    digitalWrite(out2, HIGH);
+    digitalWrite(out3, HIGH);
+    digitalWrite(out4, HIGH);
+    digitalWrite(out5, LOW);
+  }
+  else if (pushCount == 4)
+  {
+    digitalWrite(out1, HIGH);
+    digitalWrite(out2, HIGH);
+    digitalWrite(out3, HIGH);
+    digitalWrite(out4, HIGH);
+    digitalWrite(out5, HIGH);
+  }
+
+  else if (pushCount == 5)
+  {
+    digitalWrite(out1, LOW);
+    digitalWrite(out2, LOW);
+    digitalWrite(out3, LOW);
+    digitalWrite(out4, LOW);
+    digitalWrite(out5, LOW);
+  }
+
+
+  //red push button
+
+  if (redpushCount > 5) {
+    redpushCount = 0;
+  }
+
+  redButtonState = digitalRead (redPush);
+
+  if (preRedButtonState == 0 && redButtonState == 1) {
+    preRedButtonState = 1;
+
+
+  }
+
+
+
+  if (preRedButtonState == 1 && redButtonState == 0) {
+    preRedButtonState = 0;
+    redpushCount ++;
+
+
+
+  }
+
+
+  if (redpushCount == 0)
+  {
+    digitalWrite(out1, LOW);
+    digitalWrite(out2, LOW);
+    digitalWrite(out3, LOW);
+    digitalWrite(out4, LOW);
+    digitalWrite(out5, LOW);
+  }
+  else if (redpushCount == 1)
+  {
+    digitalWrite(out1, LOW);
+    digitalWrite(out2, LOW);
+    digitalWrite(out3, LOW);
+    digitalWrite(out4, LOW);
+    digitalWrite(out5, HIGH);
+  }
+  else if (redpushCount == 2)
+  {
+    digitalWrite(out1, LOW);
+    digitalWrite(out2, LOW);
+    digitalWrite(out3, LOW);
+    digitalWrite(out4, HIGH);
+    digitalWrite(out5, HIGH);
+  }
+  else if (redpushCount == 3)
+  {
+    digitalWrite(out1, LOW);
+    digitalWrite(out2, LOW);
+    digitalWrite(out3, HIGH);
+    digitalWrite(out4, HIGH);
+    digitalWrite(out5, HIGH);
+  }
+  else if (redpushCount == 4)
+  {
+    digitalWrite(out1, LOW);
+    digitalWrite(out2, HIGH);
+    digitalWrite(out3, HIGH);
+    digitalWrite(out4, HIGH);
+    digitalWrite(out5, HIGH);
+  }
+
+  else if (redpushCount == 5)
+  {
+    digitalWrite(out1, HIGH);
+    digitalWrite(out2, HIGH);
+    digitalWrite(out3, HIGH);
+    digitalWrite(out4, HIGH);
+    digitalWrite(out5, HIGH);
+  }
+
+}
