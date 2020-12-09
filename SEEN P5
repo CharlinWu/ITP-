@@ -1,0 +1,267 @@
+NYU ITP PCOMP FINAL 
+SEEN P5JS 
+
+let introScene;
+let firstScene;
+let lastScene;
+let currentScene = 0;
+let openMono;
+let eye1;
+let eye2;
+let eye3;
+var serial;
+var portSelector;
+let skyEye;
+let touch = 0;
+let isTouched = false;
+let leftRight = 0;
+let isEndedSound = false;
+let newScene = false;
+
+///////////preload all the audios
+
+function preload() {
+
+  openMono = loadSound('asset/openingpcomp.mp3');
+  midMono = loadSound('asset/monoEndpcomp.mp3');
+  endMono = loadSound('asset/endingbyeb.mp3');
+  
+}
+
+
+
+
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  // noCanvas();
+  introScene = createVideo('asset/openingEyecopy.mp4', videoLoad);
+  firstScene = createVideo('asset/firstscene.mp4');
+  lastScene = createVideo('asset/lastscene.mp4');
+  
+  openMono.onended(finishSound);
+  midMono.onended(finishSound);
+  endMono.onended(finishSound);
+   
+ ////opening monologue 
+  setTimeout(openMonoPlay, 5000);
+  if(currentScene == 1){
+  setTimeout(midMonoPlay, 5000); }
+  if(currentScene == 2 ){
+  setTimeout(endMonoPlay, 5000); 
+     }
+  
+  eye1 = new Eye(200, height - height / 10, 60, 255, 0, 0);
+  
+  
+  eye2 = new Eye(width/2, height - height / 10, 60, 255, 0, 0);
+  
+  eye3 = new Eye(width/2, height - height / 10, 60, 255, 0, 0);
+  
+  
+  introScene.hide();
+  firstScene.hide();
+  lastScene.hide();
+
+
+
+
+  smooth(); // antialias drawing lines
+  serial = new p5.SerialPort(); // make a new instance of the serialport library
+  serial.on('list', printList); // set a callback function for the serialport list event
+  serial.on('connected', serverConnected); // callback for connecting to the server
+  serial.on('open', portOpen); // callback for the port opening
+  serial.on('data', serialEvent); // callback for when new data arrives
+  serial.on('error', serialError); // callback for errors
+  serial.on('close', portClose); // callback for the port closing
+  serial.list(); // list the serial ports
+
+}
+
+
+
+
+///////////////functions for calling and playinh videos and sounds and monologues 
+
+
+function videoLoad() {
+ introScene.loop();
+  
+  
+}
+
+function openMonoPlay(){
+  
+  openMono.play();
+  
+}
+
+function midMonoPlay(){
+  console.log("midMonoplay");
+  openMono.stop();
+  midMono.play();
+  isEndedSound = false;
+  
+}
+
+
+function endMonoPlay(){
+  
+  midMono.stop();
+  endMono.play();
+  isEndedSound = false;
+  
+}
+
+
+function finishSound() {
+  console.log("end sound");
+  isEndedSound = true;
+}
+
+
+
+
+
+///////////////////////////draw function here 
+function draw() {
+  
+  // background(0, 30, 40);
+  if (newScene == true) {
+    if(currentScene == 1){
+  setTimeout(midMonoPlay, 0);}
+  if(currentScene == 2){
+  setTimeout(endMonoPlay, 5000); 
+     }
+    newScene = false;
+  }
+
+  if (currentScene == 0) {
+    background(250);
+    image(introScene, 0, 0, windowWidth, windowHeight);
+    eye1.display();
+    eye1.move(leftRight);
+    if(eye1.x >= width/2){
+      currentScene = 1; 
+      newScene = true;
+      firstScene.play();
+    
+      
+}
+
+  } else if (currentScene == 1) {
+    //background(0);
+    image(firstScene, 0, 0, width, height);
+    eye2.display();
+    eye2.move(leftRight);
+
+    if(eye2.x <= width/2){
+      currentScene= 2;
+      newScene = true;
+      lastScene.play();
+
+    }
+  } else if(currentScene == 2){
+    image(lastScene, 0, 0, width, height);
+    eye3.display();
+    eye3.move(leftRight);
+      
+    }
+  }
+
+
+
+
+//////////////functions for serial port and communications
+
+
+
+function printList(portList) {
+  // make a select menu and position it:
+  portSelector = createSelect();
+  portSelector.position(10, 10);
+
+  // portList is an array of serial port names
+  for (var i = 0; i < portList.length; i++) {
+    // Display the list the console:
+    // console.log(i + " " + portList[i]);
+    // add item to the select menu:
+    portSelector.option(portList[i]);
+  }
+  // set a handler for when a port is selected from the menu:
+  portSelector.changed(openPort);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+function openPort() {
+  var thisPort = portSelector.value();
+  if (thisPort != null) {
+    serial.open(thisPort);
+  }
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////
+function serverConnected() {
+  print('connected to server.');
+}
+
+function portOpen() {
+  print('the serial port opened.')
+  // send a byte to prompt the microcontroller to send:
+  serial.write('x');
+}
+
+function serialError(err) {
+  print('Something went wrong with the serial port. ' + err);
+}
+
+function portClose() {
+  print('The serial port closed.');
+}
+
+
+
+function touchMoved() {
+  receivedData = mouseX;
+
+
+}
+
+
+
+
+function serialEvent() {
+  // read a string from the serial port
+  // until you get carriage return and newline:
+  var inString = serial.readStringUntil('\r\n');
+  receivedData = inString;
+  //check to see that there's actually a string there:
+
+
+  if (inString.length > 0 && isEndedSound == true) {
+    console.log(inString);
+
+    if (inString == '0') {
+      leftRight = 0;
+
+
+    } else if (inString == '1') {
+      leftRight = 5;
+
+    } else if (inString == '2') {
+      leftRight = -5;
+
+
+    }
+    if(currentScene == 2){
+    serial.write('W');
+      
+    }
+    //console.log(inString);
+   // console.log(leftRight);
+  }
+}
+
