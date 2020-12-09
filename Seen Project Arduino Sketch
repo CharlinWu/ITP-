@@ -1,0 +1,99 @@
+NYU ITP PCOMP CLASS FINAL PROJECT 
+SEEN CODE
+ARDUINO SKETCH 
+#include <Servo.h>
+
+
+#include <Arduino_APDS9960.h>
+
+
+Servo myservo;
+int gesturetoP5 = 0;
+int left = 1;
+int right = 2;
+int pos = 0;
+void setup() {
+  Serial.begin(9600);
+
+  myservo.attach(3);
+
+  // wait for Serial Monitor to open:
+  while (!Serial);
+  // if the sensor doesn't initialize, let the user know:
+  if (!APDS.begin()) {
+    Serial.println("APDS9960 sensor not working. Check your wiring.");
+    // stop the sketch:
+    while (true);
+  } else {
+  }
+
+  Serial.println("Sensor is working");
+}
+
+
+void loop() {
+  //if (Serial.available() > 0) {
+  // if the sensor has a reading:
+  if (APDS.gestureAvailable()) {
+    // read the incoming byte:
+    Serial.println(gesturetoP5);
+    int inByte = Serial.read();
+
+    // read the color
+    int gesture = APDS.readGesture();
+
+    switch (gesture) {
+      case GESTURE_LEFT:
+        Serial.println("Left");
+        gesturetoP5 = left;
+        //targetPos = min(180, lastPos + 180);
+
+
+        if (inByte == 87) {
+        for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+          // in steps of 1 degree
+          myservo.write(pos);              // tell servo to go to position in variable 'pos'
+          delay(15);                       // waits 15ms for the servo to reach the position
+        }
+        for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+          myservo.write(pos);              // tell servo to go to position in variable 'pos'
+          delay(15);                       // waits 15ms for the servo to reach the position
+        }
+         }
+        break;
+
+      case GESTURE_RIGHT:
+
+        Serial.println("Right");
+        gesturetoP5 = right;
+
+ 
+        if (inByte == 87) {
+        for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
+          // in steps of 1 degree
+          myservo.write(pos);              // tell servo to go to position in variable 'pos'
+          delay(15);                       // waits 15ms for the servo to reach the position
+        }
+        for (pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
+          myservo.write(pos);              // tell servo to go to position in variable 'pos'
+          delay(15);                       // waits 15ms for the servo to reach the position
+        }
+        }
+        break;
+
+      default:
+
+        break;
+
+    }
+  }
+  //}
+
+  //  if (Serial.available() > 0) {
+  //    // read the incoming byte:
+  //    int inByte = Serial.read();
+  //    Serial.println(gesturetoP5);
+  //  }
+
+
+}
